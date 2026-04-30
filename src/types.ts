@@ -434,6 +434,41 @@ export interface ExchangeOption {
   updatedAt: string;
 }
 
+// ---------------- Moments ----------------
+
+export type MomentStatus = 'active' | 'removed' | 'deleted';
+
+export interface MomentMedia {
+  url: string;
+  publicId: string;
+  kind: 'image' | 'video';
+  width: number;
+  height: number;
+}
+
+export interface Moment {
+  id: string;
+  /** Populated subdoc when listed via the admin endpoint. */
+  authorId:
+    | string
+    | {
+        id: string;
+        username?: string;
+        displayName?: string;
+        numericId?: number;
+        avatarUrl?: string;
+      };
+  text: string;
+  media: MomentMedia[];
+  likeCount: number;
+  commentCount: number;
+  status: MomentStatus;
+  removedReason: string;
+  removedAt?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // ---------------- Agora ----------------
 
 export interface AgoraConfigView {
