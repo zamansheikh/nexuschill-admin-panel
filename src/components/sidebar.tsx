@@ -22,6 +22,8 @@ const NAV: NavItem[] = [
   { href: '/cosmetics', label: 'Cosmetics', permission: 'cosmetics.view', icon: '◆' },
   { href: '/svip', label: 'SVIP Tiers', permission: 'vip.view', icon: '★' },
   { href: '/store', label: 'Store', permission: 'store.view', icon: '⌂' },
+  { href: '/banners', label: 'Home Banners', permission: 'banners.view', icon: '▭' },
+  { href: '/splash', label: 'Splash Banners', permission: 'banners.view', icon: '▣' },
   { href: '/transactions', label: 'Transactions', permission: 'transactions.view', icon: '$' },
   { href: '/admins', label: 'Admin Users', permission: 'admin.view', icon: '◉' },
   { href: '/roles', label: 'Roles & Permissions', permission: 'admin.view', icon: '✦' },

@@ -346,6 +346,40 @@ export interface StoreListing {
   updatedAt: string;
 }
 
+// ---------------- Banners ----------------
+
+export type BannerLinkKind = 'none' | 'route' | 'room' | 'user' | 'web' | 'event';
+
+export interface HomeBanner {
+  id: string;
+  title: string;
+  subtitle: string;
+  imageUrl: string;
+  imagePublicId: string;
+  linkKind: BannerLinkKind;
+  linkValue: string;
+  sortOrder: number;
+  active: boolean;
+  startDate?: string | null;
+  endDate?: string | null;
+  countries: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SplashBanner {
+  id: string;
+  title: string;
+  imageUrl: string;
+  imagePublicId: string;
+  priority: number;
+  active: boolean;
+  startDate?: string | null;
+  endDate?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // ---------------- Permissions ----------------
 
 export interface PermissionItem {
