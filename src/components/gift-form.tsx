@@ -2,9 +2,10 @@
 
 import { FormEvent, useState } from 'react';
 
+import AssetPreview from '@/components/asset-preview';
 import { Button, Card, ErrorAlert, Field, Input, Select, Textarea } from '@/components/ui';
 import { api } from '@/lib/api';
-import type { Gift, GiftCategory } from '@/types';
+import type { Gift, GiftAssetType, GiftCategory } from '@/types';
 
 interface Props {
   initial?: Gift;
@@ -23,7 +24,10 @@ export default function GiftForm({ initial, onSaved }: Props) {
   const [priceCoins, setPriceCoins] = useState(String(initial?.priceCoins ?? 10));
   const [diamondReward, setDiamondReward] = useState(String(initial?.diamondReward ?? 5));
   const [thumbnailUrl, setThumbnailUrl] = useState(initial?.thumbnailUrl ?? '');
+  const [thumbnailPublicId, setThumbnailPublicId] = useState(initial?.thumbnailPublicId ?? '');
   const [animationUrl, setAnimationUrl] = useState(initial?.animationUrl ?? '');
+  const [animationPublicId, setAnimationPublicId] = useState(initial?.animationPublicId ?? '');
+  const [assetType, setAssetType] = useState<GiftAssetType>(initial?.assetType ?? 'none');
   const [soundUrl, setSoundUrl] = useState(initial?.soundUrl ?? '');
   const [durationMs, setDurationMs] = useState(String(initial?.durationMs ?? 3000));
   const [active, setActive] = useState(initial?.active ?? true);
@@ -34,8 +38,49 @@ export default function GiftForm({ initial, onSaved }: Props) {
   const [combo, setCombo] = useState((initial?.comboMultipliers ?? [1, 10, 66, 188, 520, 1314]).join(','));
   const [sortOrder, setSortOrder] = useState(String(initial?.sortOrder ?? 0));
 
+  const [uploadingThumb, setUploadingThumb] = useState(false);
+  const [uploadingAnim, setUploadingAnim] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  async function uploadThumbnail(file: File) {
+    setUploadingThumb(true);
+    setError(null);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const res = await api<{ url: string; publicId: string }>(
+        '/admin/gifts/upload/thumbnail',
+        { method: 'POST', body: fd },
+      );
+      setThumbnailUrl(res.url);
+      setThumbnailPublicId(res.publicId);
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setUploadingThumb(false);
+    }
+  }
+
+  async function uploadAnimation(file: File) {
+    setUploadingAnim(true);
+    setError(null);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const res = await api<{ url: string; publicId: string; assetType: GiftAssetType }>(
+        '/admin/gifts/upload/animation',
+        { method: 'POST', body: fd },
+      );
+      setAnimationUrl(res.url);
+      setAnimationPublicId(res.publicId);
+      setAssetType(res.assetType);
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setUploadingAnim(false);
+    }
+  }
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -50,7 +95,10 @@ export default function GiftForm({ initial, onSaved }: Props) {
         priceCoins: parseInt(priceCoins, 10),
         diamondReward: parseInt(diamondReward, 10),
         thumbnailUrl: thumbnailUrl || undefined,
+        thumbnailPublicId: thumbnailPublicId || undefined,
         animationUrl: animationUrl || undefined,
+        animationPublicId: animationPublicId || undefined,
+        assetType,
         soundUrl: soundUrl || undefined,
         durationMs: parseInt(durationMs, 10),
         active,
@@ -154,25 +202,103 @@ export default function GiftForm({ initial, onSaved }: Props) {
         </div>
 
         <div className="rounded-lg border border-slate-200 p-3">
-          <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Assets</h3>
-          <div className="space-y-2">
-            <Field label="Thumbnail URL" hint="Cloudinary URL or any HTTPS URL">
-              <Input value={thumbnailUrl} onChange={(e) => setThumbnailUrl(e.target.value)} />
-            </Field>
-            <Field label="Animation URL (Lottie JSON / SVGA / MP4)">
-              <Input value={animationUrl} onChange={(e) => setAnimationUrl(e.target.value)} />
-            </Field>
-            <Field label="Sound URL (optional)">
-              <Input value={soundUrl} onChange={(e) => setSoundUrl(e.target.value)} />
-            </Field>
-            {thumbnailUrl && (
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-slate-500">Preview:</span>
-                <img src={thumbnailUrl} alt="" className="h-12 w-12 rounded object-cover ring-1 ring-slate-200" />
+          <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+            Thumbnail (PNG / JPG / WebP)
+          </h3>
+          <div className="flex items-start gap-4">
+            {thumbnailUrl ? (
+              <img
+                src={thumbnailUrl}
+                alt=""
+                className="h-24 w-24 rounded-lg border border-slate-200 object-cover"
+              />
+            ) : (
+              <div className="flex h-24 w-24 items-center justify-center rounded-lg border border-dashed border-slate-300 text-xs text-slate-400">
+                No thumbnail
               </div>
             )}
+            <div className="flex-1 space-y-2">
+              <input
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/gif"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) uploadThumbnail(f);
+                  e.target.value = '';
+                }}
+                disabled={uploadingThumb}
+                className="block w-full text-sm"
+              />
+              <p className="text-xs text-slate-500">
+                {uploadingThumb
+                  ? 'Uploading…'
+                  : 'Static image shown on the gift sheet card.'}
+              </p>
+              {thumbnailUrl && (
+                <Input value={thumbnailUrl} readOnly className="font-mono text-xs" />
+              )}
+            </div>
           </div>
         </div>
+
+        <div className="rounded-lg border border-slate-200 p-3">
+          <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+            Animation (SVGA / Lottie JSON / MP4)
+          </h3>
+          <div className="flex items-start gap-4">
+            {animationUrl ? (
+              <AssetPreview
+                assetUrl={animationUrl}
+                assetType={
+                  // AssetPreview was built for cosmetics; the enums match
+                  // 1:1 so we can pass the gift assetType straight through.
+                  (assetType === 'none' ? 'none' : assetType) as
+                    | 'svga'
+                    | 'lottie'
+                    | 'mp4'
+                    | 'image'
+                    | 'none'
+                }
+                previewUrl={thumbnailUrl}
+                className="h-32 w-32 shrink-0 rounded-lg border border-slate-200 bg-slate-50"
+              />
+            ) : (
+              <div className="flex h-32 w-32 shrink-0 items-center justify-center rounded-lg border border-dashed border-slate-300 text-xs text-slate-400">
+                No animation
+              </div>
+            )}
+            <div className="flex-1 space-y-2">
+              <input
+                type="file"
+                accept=".svga,.json,.mp4,.webm"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) uploadAnimation(f);
+                  e.target.value = '';
+                }}
+                disabled={uploadingAnim}
+                className="block w-full text-sm"
+              />
+              <p className="text-xs text-slate-500">
+                {uploadingAnim
+                  ? 'Uploading…'
+                  : 'SVGA → played by SVGA player. Lottie JSON → Lottie. MP4/WebM → autoplay video.'}
+              </p>
+              {animationUrl && (
+                <>
+                  <div className="text-xs text-slate-600">
+                    <b>Type:</b> {assetType}
+                  </div>
+                  <Input value={animationUrl} readOnly className="font-mono text-xs" />
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <Field label="Sound URL (optional)">
+          <Input value={soundUrl} onChange={(e) => setSoundUrl(e.target.value)} />
+        </Field>
 
         <div className="grid grid-cols-2 gap-3">
           <Field label="Combo multipliers" hint="Comma-separated, e.g. 1,10,66,188">

@@ -159,6 +159,10 @@ export interface ResellerLedgerEntry {
 
 export type GiftCategory = 'basic' | 'premium' | 'legendary' | 'limited';
 
+/// Mirrors the backend GiftAssetType — the upload endpoint returns this so
+/// the form can persist + the mobile overlay knows which player to use.
+export type GiftAssetType = 'image' | 'svga' | 'lottie' | 'mp4' | 'none';
+
 export interface LocalizedString {
   en: string;
   bn: string;
@@ -173,7 +177,10 @@ export interface Gift {
   priceCoins: number;
   diamondReward: number;
   thumbnailUrl: string;
+  thumbnailPublicId?: string;
   animationUrl: string;
+  animationPublicId?: string;
+  assetType?: GiftAssetType;
   soundUrl: string;
   durationMs: number;
   active: boolean;
