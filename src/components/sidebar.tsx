@@ -51,10 +51,10 @@ export default function Sidebar() {
     <aside className="flex w-64 shrink-0 flex-col border-r border-slate-200 bg-white">
       <div className="flex items-center gap-3 border-b border-slate-200 px-4 py-4">
         <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand text-sm font-bold text-white">
-          PA
+          NC
         </div>
         <div>
-          <div className="text-sm font-semibold text-slate-900">Party App</div>
+          <div className="text-sm font-semibold text-slate-900">NexusChill</div>
           <div className="text-xs text-slate-500">Admin Console</div>
         </div>
       </div>
