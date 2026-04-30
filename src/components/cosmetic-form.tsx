@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from 'react';
 
+import AssetPreview from '@/components/asset-preview';
 import { Button, Card, ErrorAlert, Field, Input, Select, Textarea } from '@/components/ui';
 import { api } from '@/lib/api';
 import type { CosmeticAssetType, CosmeticItem, CosmeticType } from '@/types';
@@ -226,31 +227,45 @@ export default function CosmeticForm({ initial, onSaved }: Props) {
           <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
             Animated asset (SVGA / Lottie JSON / MP4)
           </h3>
-          <div className="space-y-2">
-            <input
-              type="file"
-              accept=".svga,.json,.mp4,.webm"
-              onChange={(e) => {
-                const f = e.target.files?.[0];
-                if (f) uploadAsset(f);
-                e.target.value = '';
-              }}
-              disabled={uploadingAsset}
-              className="block w-full text-sm"
-            />
-            <p className="text-xs text-slate-500">
-              {uploadingAsset
-                ? 'Uploading…'
-                : 'Optional. SVGA → played by the SVGAPlayer. Lottie JSON → played by lottie. MP4/WebM → autoplay video.'}
-            </p>
-            {assetUrl && (
-              <>
-                <div className="text-xs text-slate-600">
-                  <b>Type:</b> {assetType}
-                </div>
-                <Input value={assetUrl} readOnly className="font-mono text-xs" />
-              </>
+          <div className="flex items-start gap-4">
+            {assetUrl ? (
+              <AssetPreview
+                assetUrl={assetUrl}
+                assetType={assetType}
+                previewUrl={previewUrl}
+                className="h-32 w-32 shrink-0 rounded-lg border border-slate-200 bg-slate-50"
+              />
+            ) : (
+              <div className="flex h-32 w-32 shrink-0 items-center justify-center rounded-lg border border-dashed border-slate-300 text-xs text-slate-400">
+                No asset
+              </div>
             )}
+            <div className="flex-1 space-y-2">
+              <input
+                type="file"
+                accept=".svga,.json,.mp4,.webm"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) uploadAsset(f);
+                  e.target.value = '';
+                }}
+                disabled={uploadingAsset}
+                className="block w-full text-sm"
+              />
+              <p className="text-xs text-slate-500">
+                {uploadingAsset
+                  ? 'Uploading…'
+                  : 'Optional. SVGA → played by the SVGA player. Lottie JSON → played by Lottie. MP4/WebM → autoplay video.'}
+              </p>
+              {assetUrl && (
+                <>
+                  <div className="text-xs text-slate-600">
+                    <b>Type:</b> {assetType}
+                  </div>
+                  <Input value={assetUrl} readOnly className="font-mono text-xs" />
+                </>
+              )}
+            </div>
           </div>
         </div>
 
