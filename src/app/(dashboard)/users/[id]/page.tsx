@@ -65,7 +65,13 @@ export default function UserDetailPage() {
     <div className="mx-auto max-w-4xl">
       <PageHeader
         title={user.displayName || user.username || 'User'}
-        subtitle={`@${user.username || '(no username)'} — ${user.email || user.phone || '—'}`}
+        subtitle={
+          <>
+            <code className="font-semibold text-brand">ID {user.numericId ?? '—'}</code>
+            {' · '}
+            @{user.username || '(no username)'} — {user.email || user.phone || '—'}
+          </>
+        }
         actions={<Button variant="secondary" onClick={() => router.back()}>← Back</Button>}
       />
 
@@ -75,7 +81,8 @@ export default function UserDetailPage() {
         <Card>
           <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-500">Profile</h3>
           <dl className="space-y-1.5 text-sm">
-            <Row label="ID" value={<code className="text-xs">{user.id}</code>} />
+            <Row label="Public ID" value={<code className="text-xs font-semibold text-brand">{user.numericId ?? '—'}</code>} />
+            <Row label="ObjectId" value={<code className="text-xs">{user.id}</code>} />
             <Row label="Display name" value={user.displayName || '—'} />
             <Row label="Email" value={user.email || '—'} />
             <Row label="Phone" value={user.phone || '—'} />

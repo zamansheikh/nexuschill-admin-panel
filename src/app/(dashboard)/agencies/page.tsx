@@ -71,7 +71,7 @@ export default function AgenciesPage() {
           className="sm:col-span-2"
         >
           <Input
-            placeholder="Search name, code, description…"
+            placeholder="Search by ID, name, code, description…"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
           />
@@ -107,6 +107,7 @@ export default function AgenciesPage() {
           <Table>
             <thead>
               <tr>
+                <Th>ID</Th>
                 <Th>Code</Th>
                 <Th>Name</Th>
                 <Th>Country</Th>
@@ -119,6 +120,11 @@ export default function AgenciesPage() {
             <tbody>
               {data.items.map((a) => (
                 <tr key={a.id} className="cursor-pointer hover:bg-slate-50">
+                  <Td>
+                    <code className="text-xs font-semibold text-brand">
+                      {a.numericId ?? '—'}
+                    </code>
+                  </Td>
                   <Td>
                     <Link href={`/agencies/${a.id}`} className="block">
                       <code className="text-xs font-semibold text-brand">{a.code}</code>

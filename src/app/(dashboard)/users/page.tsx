@@ -56,7 +56,7 @@ export default function UsersPage() {
           className="sm:col-span-2"
         >
           <Input
-            placeholder="Search email, phone, username, name…"
+            placeholder="Search by ID, email, phone, username, name…"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
           />
@@ -87,6 +87,7 @@ export default function UsersPage() {
           <Table>
             <thead>
               <tr>
+                <Th>ID</Th>
                 <Th>User</Th>
                 <Th>Contact</Th>
                 <Th>Country</Th>
@@ -99,6 +100,11 @@ export default function UsersPage() {
             <tbody>
               {data.items.map((u) => (
                 <tr key={u.id} className="cursor-pointer hover:bg-slate-50">
+                  <Td>
+                    <code className="text-xs font-semibold text-brand">
+                      {u.numericId ?? '—'}
+                    </code>
+                  </Td>
                   <Td>
                     <Link href={`/users/${u.id}`} className="block">
                       <div className="font-medium text-slate-900">{u.displayName || u.username || '—'}</div>

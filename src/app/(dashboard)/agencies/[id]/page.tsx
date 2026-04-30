@@ -135,6 +135,7 @@ export default function AgencyDetailPage() {
         <Card>
           <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-500">Details</h3>
           <dl className="space-y-1.5 text-sm">
+            <Row label="Public ID" value={<code className="font-semibold text-brand">{agency.numericId ?? '—'}</code>} />
             <Row label="Code" value={<code>{agency.code}</code>} />
             <Row label="Country" value={agency.country} />
             <Row label="Commission" value={`${agency.commissionRate}%`} />

@@ -71,7 +71,7 @@ export default function ResellersPage() {
           className="sm:col-span-2"
         >
           <Input
-            placeholder="Search name or code…"
+            placeholder="Search by ID, name, or code…"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
           />
@@ -103,6 +103,7 @@ export default function ResellersPage() {
           <Table>
             <thead>
               <tr>
+                <Th>ID</Th>
                 <Th>Code</Th>
                 <Th>Name</Th>
                 <Th>Pool</Th>
@@ -115,6 +116,11 @@ export default function ResellersPage() {
             <tbody>
               {data.items.map((r) => (
                 <tr key={r.id} className="cursor-pointer hover:bg-slate-50">
+                  <Td>
+                    <code className="text-xs font-semibold text-brand">
+                      {r.numericId ?? '—'}
+                    </code>
+                  </Td>
                   <Td>
                     <Link href={`/resellers/${r.id}`}>
                       <code className="text-xs font-semibold text-brand">{r.code}</code>

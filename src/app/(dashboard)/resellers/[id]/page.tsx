@@ -67,6 +67,8 @@ export default function ResellerDetailPage() {
         title={reseller.name}
         subtitle={
           <>
+            <code className="font-semibold text-brand">ID {reseller.numericId ?? '—'}</code>
+            {' · '}
             <code className="text-brand">{reseller.code}</code> · {reseller.country} ·{' '}
             <span>
               pool: {reseller.coinPool.toLocaleString()}

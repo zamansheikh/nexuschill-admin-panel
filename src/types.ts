@@ -60,6 +60,8 @@ export interface HostProfile {
 
 export interface AppUser {
   id: string;
+  /** 7-digit public ID (e.g. 1234567). Backfilled on existing users. */
+  numericId?: number;
   email?: string;
   phone?: string;
   username?: string;
@@ -87,6 +89,7 @@ export interface AppUser {
 
 export interface Agency {
   id: string;
+  numericId?: number;
   name: string;
   code: string;
   description: string;
@@ -102,6 +105,41 @@ export interface Agency {
   createdBy?: string | null;
   createdAt: string;
   updatedAt: string;
+}
+
+// ---------------- Resellers ----------------
+
+export interface Reseller {
+  id: string;
+  numericId?: number;
+  name: string;
+  code: string;
+  description: string;
+  country: string;
+  contactEmail: string;
+  contactPhone: string;
+  coinPool: number;
+  creditLimit: number;
+  commissionRate: number;
+  lifetimeCoinsReceived: number;
+  lifetimeCoinsAssigned: number;
+  status: 'active' | 'suspended' | 'terminated';
+  ownerAdminId?: string | null;
+  createdBy?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ResellerLedgerEntry {
+  id: string;
+  resellerId: string;
+  type: 'topup' | 'assign';
+  amount: number;
+  balanceAfter: number;
+  toUserId?: string | null;
+  performedBy?: string | null;
+  description: string;
+  createdAt: string;
 }
 
 // ---------------- Gifts ----------------
