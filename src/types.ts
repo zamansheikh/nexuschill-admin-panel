@@ -407,6 +407,46 @@ export interface DailyRewardConfig {
   updatedAt: string;
 }
 
+// ---------------- Wallet — admin-managed lists ----------------
+
+export interface RechargePackage {
+  id: string;
+  coins: number;
+  bonusCoins: number;
+  priceAmount: number;
+  priceCurrency: string;
+  badgeText: string;
+  sortOrder: number;
+  active: boolean;
+  startDate?: string | null;
+  endDate?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ExchangeOption {
+  id: string;
+  diamondsRequired: number;
+  coinsAwarded: number;
+  sortOrder: number;
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ---------------- Agora ----------------
+
+export interface AgoraConfigView {
+  id: string;
+  appId: string;
+  /** Masked except last 4 chars. Empty string when not set. */
+  appCertificateMasked: string;
+  hasAppCertificate: boolean;
+  defaultExpireSeconds: number;
+  enabled: boolean;
+  updatedAt?: string;
+}
+
 // ---------------- Permissions ----------------
 
 export interface PermissionItem {
