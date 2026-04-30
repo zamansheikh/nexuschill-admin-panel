@@ -16,6 +16,10 @@ interface NavItem {
 const NAV: NavItem[] = [
   { href: '/dashboard', label: 'Dashboard', icon: '■' },
   { href: '/users', label: 'App Users', permission: 'users.view', icon: '◯' },
+  { href: '/agencies', label: 'Agencies', permission: 'agency.view', icon: '◈' },
+  { href: '/resellers', label: 'Resellers', permission: 'reseller.view', icon: '◇' },
+  { href: '/gifts', label: 'Gifts', permission: 'gifts.view', icon: '✿' },
+  { href: '/transactions', label: 'Transactions', permission: 'transactions.view', icon: '$' },
   { href: '/admins', label: 'Admin Users', permission: 'admin.view', icon: '◉' },
   { href: '/roles', label: 'Roles & Permissions', permission: 'admin.view', icon: '✦' },
 ];

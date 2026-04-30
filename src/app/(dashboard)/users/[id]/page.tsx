@@ -4,9 +4,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 
 import { Badge, Button, Card, ErrorAlert, Field, Input, PageHeader, Select } from '@/components/ui';
+import WalletCard from '@/components/wallet-card';
 import { api } from '@/lib/api';
 import { authStorage, hasPermission } from '@/lib/auth';
-import type { AdminRole, AppUser } from '@/types';
+import type { AdminRole, Agency, AppUser, PaginatedList, Reseller } from '@/types';
 
 export default function UserDetailPage() {
   const params = useParams();
@@ -118,6 +119,10 @@ export default function UserDetailPage() {
             </div>
           )}
         </Card>
+      </div>
+
+      <div className="mt-6">
+        <WalletCard userId={user.id} />
       </div>
 
       <div className="mt-6 grid gap-4 md:grid-cols-2">
@@ -290,11 +295,28 @@ function PromoteForm({
   const [scopeId, setScopeId] = useState('');
   const [busy, setBusy] = useState(false);
 
+  const [agencies, setAgencies] = useState<Agency[]>([]);
+  const [resellers, setResellers] = useState<Reseller[]>([]);
+
   const selectedRole = roles.find((r) => r.id === roleId);
   const scopeType = selectedRole?.scopeType;
 
   // Only show roles that typically apply to partners (agency, reseller, or custom non-system)
   const promotableRoles = roles.filter((r) => !r.isSystem || r.scopeType !== null);
+
+  // Lazy-load agencies / resellers when their scope type is selected
+  useEffect(() => {
+    if (scopeType === 'agency' && agencies.length === 0) {
+      api<PaginatedList<Agency>>('/admin/agencies?limit=100&status=active')
+        .then((r) => setAgencies(r.items))
+        .catch(() => {});
+    }
+    if (scopeType === 'reseller' && resellers.length === 0) {
+      api<PaginatedList<Reseller>>('/admin/resellers?limit=100&status=active')
+        .then((r) => setResellers(r.items))
+        .catch(() => {});
+    }
+  }, [scopeType, agencies.length, resellers.length]);
 
   return (
     <form
@@ -330,14 +352,29 @@ function PromoteForm({
         </Select>
       </Field>
 
-      {scopeType && (
-        <Field label={`${scopeType} ID`} hint={`ObjectId of the ${scopeType} this admin manages`}>
-          <Input
-            required
-            value={scopeId}
-            onChange={(e) => setScopeId(e.target.value)}
-            placeholder="507f1f77bcf86cd799439011"
-          />
+      {scopeType === 'agency' && (
+        <Field label="Agency" hint="The agency this admin will own/manage">
+          <Select required value={scopeId} onChange={(e) => setScopeId(e.target.value)}>
+            <option value="">Select agency…</option>
+            {agencies.map((a) => (
+              <option key={a.id} value={a.id}>
+                {a.code} — {a.name}
+              </option>
+            ))}
+          </Select>
+        </Field>
+      )}
+
+      {scopeType === 'reseller' && (
+        <Field label="Reseller" hint="The reseller this admin will manage">
+          <Select required value={scopeId} onChange={(e) => setScopeId(e.target.value)}>
+            <option value="">Select reseller…</option>
+            {resellers.map((r) => (
+              <option key={r.id} value={r.id}>
+                {r.code} — {r.name} (pool: {r.coinPool.toLocaleString()})
+              </option>
+            ))}
+          </Select>
         </Field>
       )}
 

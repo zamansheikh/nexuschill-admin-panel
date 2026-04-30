@@ -5,12 +5,13 @@ import { useRouter } from 'next/navigation';
 
 import { Button, Card, ErrorAlert, Field, Input, PageHeader, Select } from '@/components/ui';
 import { api } from '@/lib/api';
-import type { Admin, AdminRole } from '@/types';
+import type { Admin, AdminRole, Agency, PaginatedList } from '@/types';
 
 export default function NewAdminPage() {
   const router = useRouter();
 
   const [roles, setRoles] = useState<AdminRole[]>([]);
+  const [agencies, setAgencies] = useState<Agency[]>([]);
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [displayName, setDisplayName] = useState('');
@@ -26,6 +27,14 @@ export default function NewAdminPage() {
 
   const selectedRole = roles.find((r) => r.id === roleId);
   const needsScope = !!selectedRole?.scopeType;
+
+  useEffect(() => {
+    if (selectedRole?.scopeType === 'agency' && agencies.length === 0) {
+      api<PaginatedList<Agency>>('/admin/agencies?limit=100&status=active')
+        .then((r) => setAgencies(r.items))
+        .catch(() => {});
+    }
+  }, [selectedRole, agencies.length]);
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -124,11 +133,21 @@ export default function NewAdminPage() {
             </div>
           )}
 
-          {needsScope && (
-            <Field
-              label={`${selectedRole?.scopeType?.toUpperCase()} ID`}
-              hint="The MongoDB ObjectId of the specific agency/reseller this admin manages"
-            >
+          {needsScope && selectedRole?.scopeType === 'agency' && (
+            <Field label="Agency" hint="The agency this admin will own/manage">
+              <Select required value={scopeId} onChange={(e) => setScopeId(e.target.value)}>
+                <option value="">Select agency…</option>
+                {agencies.map((a) => (
+                  <option key={a.id} value={a.id}>
+                    {a.code} — {a.name}
+                  </option>
+                ))}
+              </Select>
+            </Field>
+          )}
+
+          {needsScope && selectedRole?.scopeType === 'reseller' && (
+            <Field label="Reseller ID" hint="Reseller entity not yet implemented — paste an ObjectId">
               <Input
                 required
                 value={scopeId}
