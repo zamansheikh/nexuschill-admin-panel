@@ -127,10 +127,10 @@ export default function WalletCard({ userId }: { userId: string }) {
           </div>
         </div>
         <div className="rounded-lg bg-purple-50 p-3">
-          <div className="text-xs font-semibold uppercase tracking-wide text-purple-700">Beans</div>
-          <div className="mt-1 text-2xl font-bold text-purple-900">{wallet?.beans ?? 0}</div>
+          <div className="text-xs font-semibold uppercase tracking-wide text-purple-700">Diamonds</div>
+          <div className="mt-1 text-2xl font-bold text-purple-900">{wallet?.diamonds ?? 0}</div>
           <div className="mt-1 text-xs text-purple-600">
-            earned: {wallet?.lifetimeBeansEarned ?? 0} · withdrawn: {wallet?.lifetimeBeansWithdrawn ?? 0}
+            earned: {wallet?.lifetimeDiamondsEarned ?? 0} · withdrawn: {wallet?.lifetimeDiamondsWithdrawn ?? 0}
           </div>
         </div>
       </div>
@@ -163,7 +163,7 @@ export default function WalletCard({ userId }: { userId: string }) {
             <Field label="Currency">
               <Select value={currency} onChange={(e) => setCurrency(e.target.value as Currency)}>
                 <option value="coins">Coins</option>
-                <option value="beans">Beans</option>
+                <option value="diamonds">Diamonds</option>
               </Select>
             </Field>
             <Field label="Direction">

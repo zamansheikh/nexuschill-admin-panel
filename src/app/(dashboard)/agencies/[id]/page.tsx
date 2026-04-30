@@ -139,7 +139,7 @@ export default function AgencyDetailPage() {
             <Row label="Country" value={agency.country} />
             <Row label="Commission" value={`${agency.commissionRate}%`} />
             <Row label="Hosts" value={String(agency.hostCount)} />
-            <Row label="Total beans" value={String(agency.totalBeansEarned)} />
+            <Row label="Total diamonds" value={String(agency.totalDiamondsEarned)} />
             <Row
               label="Created"
               value={new Date(agency.createdAt).toLocaleDateString()}
@@ -215,7 +215,7 @@ export default function AgencyDetailPage() {
                   <Th>User</Th>
                   <Th>Tier</Th>
                   <Th>Stream hours</Th>
-                  <Th>Beans earned</Th>
+                  <Th>Diamonds earned</Th>
                   <Th>Status</Th>
                   <Th>Actions</Th>
                 </tr>
@@ -233,7 +233,7 @@ export default function AgencyDetailPage() {
                       <Badge tone="brand">{u.hostProfile?.tier || 'trainee'}</Badge>
                     </Td>
                     <Td className="text-xs">{u.hostProfile?.streamHours ?? 0}</Td>
-                    <Td className="text-xs">{u.hostProfile?.totalBeansEarned ?? 0}</Td>
+                    <Td className="text-xs">{u.hostProfile?.totalDiamondsEarned ?? 0}</Td>
                     <Td>
                       {u.status === 'active' && <Badge tone="green">active</Badge>}
                       {u.status === 'banned' && <Badge tone="red">banned</Badge>}

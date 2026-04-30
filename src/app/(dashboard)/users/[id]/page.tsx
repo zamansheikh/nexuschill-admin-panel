@@ -106,7 +106,7 @@ export default function UserDetailPage() {
               <div className="font-semibold text-slate-700">Host profile</div>
               <div>Tier: <b>{user.hostProfile.tier}</b></div>
               <div>Stream hours: {user.hostProfile.streamHours}</div>
-              <div>Beans earned: {user.hostProfile.totalBeansEarned}</div>
+              <div>Diamonds earned: {user.hostProfile.totalDiamondsEarned}</div>
               {user.hostProfile.agencyId && (
                 <div>Agency: <code>{user.hostProfile.agencyId}</code></div>
               )}
@@ -156,7 +156,7 @@ export default function UserDetailPage() {
           <Card>
             <h3 className="mb-3 text-sm font-semibold text-slate-900">Host capability</h3>
             <p className="mb-3 text-xs text-slate-500">
-              Hosts can broadcast live, run voice/video rooms, receive gifts, and earn beans.
+              Hosts can broadcast live, run voice/video rooms, receive gifts, and earn diamonds.
             </p>
             {user.isHost ? (
               <Button

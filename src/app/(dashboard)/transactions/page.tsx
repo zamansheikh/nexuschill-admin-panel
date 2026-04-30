@@ -89,7 +89,7 @@ export default function TransactionsPage() {
     <div>
       <PageHeader
         title="Transactions"
-        subtitle="Append-only ledger across all wallets. Every coin & bean movement is recorded here."
+        subtitle="Append-only ledger across all wallets. Every coin & diamond movement is recorded here."
       />
 
       <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-4 md:grid-cols-5">
@@ -116,7 +116,7 @@ export default function TransactionsPage() {
         >
           <option value="">All currencies</option>
           <option value="coins">Coins</option>
-          <option value="beans">Beans</option>
+          <option value="diamonds">Diamonds</option>
         </Select>
         <Select
           value={type}

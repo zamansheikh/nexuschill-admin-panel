@@ -48,7 +48,7 @@ export default function GiftDetailPage() {
         subtitle={
           <>
             <code className="text-brand">{gift.code}</code> ·{' '}
-            <span>{gift.priceCoins}c → {gift.beanReward}b</span> ·{' '}
+            <span>{gift.priceCoins}c → {gift.diamondReward}d</span> ·{' '}
             <span>{gift.totalSent} sent</span>
           </>
         }

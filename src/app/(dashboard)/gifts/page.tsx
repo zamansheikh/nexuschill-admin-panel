@@ -66,7 +66,7 @@ export default function GiftsPage() {
     <div>
       <PageHeader
         title="Gifts"
-        subtitle="Catalog of virtual gifts. Each send debits coins from sender, credits beans to receiver."
+        subtitle="Catalog of virtual gifts. Each send debits coins from sender, credits diamonds to receiver."
         actions={canManage && <Button href="/gifts/new">+ New Gift</Button>}
       />
 
@@ -164,7 +164,7 @@ export default function GiftsPage() {
                     <Badge tone={CATEGORY_TONE[g.category]}>{g.category}</Badge>
                   </Td>
                   <Td className="font-mono text-xs">
-                    {g.priceCoins}c → {g.beanReward}b
+                    {g.priceCoins}c → {g.diamondReward}d
                   </Td>
                   <Td className="text-xs">{g.totalSent}</Td>
                   <Td>

@@ -21,7 +21,7 @@ export default function GiftForm({ initial, onSaved }: Props) {
   const [descBn, setDescBn] = useState(initial?.description?.bn ?? '');
   const [category, setCategory] = useState<GiftCategory>(initial?.category ?? 'basic');
   const [priceCoins, setPriceCoins] = useState(String(initial?.priceCoins ?? 10));
-  const [beanReward, setBeanReward] = useState(String(initial?.beanReward ?? 5));
+  const [diamondReward, setDiamondReward] = useState(String(initial?.diamondReward ?? 5));
   const [thumbnailUrl, setThumbnailUrl] = useState(initial?.thumbnailUrl ?? '');
   const [animationUrl, setAnimationUrl] = useState(initial?.animationUrl ?? '');
   const [soundUrl, setSoundUrl] = useState(initial?.soundUrl ?? '');
@@ -48,7 +48,7 @@ export default function GiftForm({ initial, onSaved }: Props) {
         description: { en: descEn, ...(descBn && { bn: descBn }) },
         category,
         priceCoins: parseInt(priceCoins, 10),
-        beanReward: parseInt(beanReward, 10),
+        diamondReward: parseInt(diamondReward, 10),
         thumbnailUrl: thumbnailUrl || undefined,
         animationUrl: animationUrl || undefined,
         soundUrl: soundUrl || undefined,
@@ -139,13 +139,13 @@ export default function GiftForm({ initial, onSaved }: Props) {
               onChange={(e) => setPriceCoins(e.target.value)}
             />
           </Field>
-          <Field label="Bean reward" hint="Typically priceCoins × 0.5">
+          <Field label="Diamond reward" hint="Typically priceCoins × 0.5">
             <Input
               type="number"
               required
               min={0}
-              value={beanReward}
-              onChange={(e) => setBeanReward(e.target.value)}
+              value={diamondReward}
+              onChange={(e) => setDiamondReward(e.target.value)}
             />
           </Field>
           <Field label="Animation duration (ms)">

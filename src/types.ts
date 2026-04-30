@@ -54,7 +54,7 @@ export interface HostProfile {
   approvedAt: string;
   approvedBy?: string | null;
   agencyId?: string | null;
-  totalBeansEarned: number;
+  totalDiamondsEarned: number;
   streamHours: number;
 }
 
@@ -97,7 +97,7 @@ export interface Agency {
   commissionRate: number;
   status: 'active' | 'suspended' | 'terminated';
   hostCount: number;
-  totalBeansEarned: number;
+  totalDiamondsEarned: number;
   ownerAdminId?: string | null;
   createdBy?: string | null;
   createdAt: string;
@@ -120,7 +120,7 @@ export interface Gift {
   description: LocalizedString;
   category: GiftCategory;
   priceCoins: number;
-  beanReward: number;
+  diamondReward: number;
   thumbnailUrl: string;
   animationUrl: string;
   soundUrl: string;
@@ -147,7 +147,7 @@ export interface GiftEvent {
   receiverId: { id: string; username: string; displayName: string; avatarUrl: string } | string;
   count: number;
   totalCoinAmount: number;
-  totalBeanReward: number;
+  totalDiamondReward: number;
   contextType: string;
   message: string;
   status: 'completed' | 'reversed';
@@ -160,11 +160,11 @@ export interface Wallet {
   id: string;
   userId: string;
   coins: number;
-  beans: number;
+  diamonds: number;
   lifetimeCoinsRecharged: number;
   lifetimeCoinsSpent: number;
-  lifetimeBeansEarned: number;
-  lifetimeBeansWithdrawn: number;
+  lifetimeDiamondsEarned: number;
+  lifetimeDiamondsWithdrawn: number;
   frozen: boolean;
   frozenReason: string;
   frozenAt?: string | null;
@@ -173,7 +173,7 @@ export interface Wallet {
   updatedAt: string;
 }
 
-export type Currency = 'coins' | 'beans';
+export type Currency = 'coins' | 'diamonds';
 export type TxnDirection = 'credit' | 'debit';
 export type TxnType =
   | 'recharge'
