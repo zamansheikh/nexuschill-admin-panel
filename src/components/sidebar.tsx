@@ -24,6 +24,7 @@ const NAV: NavItem[] = [
   { href: '/store', label: 'Store', permission: 'store.view', icon: '⌂' },
   { href: '/banners', label: 'Home Banners', permission: 'banners.view', icon: '▭' },
   { href: '/splash', label: 'Splash Banners', permission: 'banners.view', icon: '▣' },
+  { href: '/daily-reward', label: 'Daily Reward', permission: 'daily_reward.view', icon: '✓' },
   { href: '/transactions', label: 'Transactions', permission: 'transactions.view', icon: '$' },
   { href: '/admins', label: 'Admin Users', permission: 'admin.view', icon: '◉' },
   { href: '/roles', label: 'Roles & Permissions', permission: 'admin.view', icon: '✦' },

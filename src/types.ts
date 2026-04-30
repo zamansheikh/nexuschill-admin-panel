@@ -380,6 +380,33 @@ export interface SplashBanner {
   updatedAt: string;
 }
 
+// ---------------- Daily Reward ----------------
+
+export type RewardKind = 'coin' | 'cosmetic';
+
+export interface DailyRewardItemConfig {
+  kind: RewardKind;
+  coinAmount?: number | null;
+  /** Server stores ObjectId string; admin form keeps it as a string. */
+  cosmeticItemId?: string | null;
+  cosmeticDurationDays: number;
+}
+
+export interface DailyRewardDayConfig {
+  day: number;
+  rewards: DailyRewardItemConfig[];
+  isBigReward: boolean;
+}
+
+export interface DailyRewardConfig {
+  id: string;
+  version: number;
+  active: boolean;
+  days: DailyRewardDayConfig[];
+  createdAt: string;
+  updatedAt: string;
+}
+
 // ---------------- Permissions ----------------
 
 export interface PermissionItem {
