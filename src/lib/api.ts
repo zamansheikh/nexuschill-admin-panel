@@ -54,8 +54,12 @@ async function refreshAccess(): Promise<boolean> {
 export async function api<T = unknown>(path: string, options: RequestOptions = {}): Promise<T> {
   const { skipAuth = false, skipRefresh = false, headers, ...init } = options;
 
+  // For FormData (file uploads) the browser must set Content-Type with a
+  // boundary string itself — explicitly setting it would break the request.
+  const isFormData = typeof FormData !== 'undefined' && init.body instanceof FormData;
+
   const finalHeaders: Record<string, string> = {
-    'Content-Type': 'application/json',
+    ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
     ...((headers as Record<string, string>) || {}),
   };
 

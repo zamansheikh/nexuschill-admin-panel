@@ -130,16 +130,29 @@ export interface Reseller {
   updatedAt: string;
 }
 
+export type ResellerLedgerType =
+  | 'pool_topup'
+  | 'pool_clawback'
+  | 'assignment'
+  | 'adjustment';
+
 export interface ResellerLedgerEntry {
   id: string;
+  idempotencyKey: string;
   resellerId: string;
-  type: 'topup' | 'assign';
+  direction: 'credit' | 'debit';
+  type: ResellerLedgerType;
   amount: number;
-  balanceAfter: number;
-  toUserId?: string | null;
-  performedBy?: string | null;
-  description: string;
+  reason: string;
+  poolBalanceAfter: number;
+  performedBy: string;
+  recipientUserId?:
+    | string
+    | { id: string; username?: string; displayName?: string }
+    | null;
+  userTxnId?: string | null;
   createdAt: string;
+  updatedAt: string;
 }
 
 // ---------------- Gifts ----------------
@@ -245,6 +258,92 @@ export interface Transaction {
   performedBy?: string | null;
   status: 'completed' | 'reversed';
   createdAt: string;
+}
+
+// ---------------- Cosmetics ----------------
+
+export type CosmeticType =
+  | 'frame'
+  | 'vehicle'
+  | 'theme'
+  | 'ring'
+  | 'medal'
+  | 'title'
+  | 'room_card'
+  | 'room_chat_bubble'
+  | 'room_list_border'
+  | 'mic_wave'
+  | 'mic_skin'
+  | 'special_gift_notification'
+  | 'profile_background'
+  | 'ludo_dice_skin'
+  | 'dynamic_avatar';
+
+export type CosmeticAssetType = 'image' | 'svga' | 'lottie' | 'mp4' | 'none';
+
+export interface CosmeticItem {
+  id: string;
+  name: LocalizedString;
+  code: string;
+  description: LocalizedString;
+  type: CosmeticType;
+  previewUrl: string;
+  previewPublicId: string;
+  assetUrl: string;
+  assetPublicId: string;
+  assetType: CosmeticAssetType;
+  rarity: number;
+  active: boolean;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ---------------- SVIP ----------------
+
+export interface SvipPrivilegeDef {
+  key: string;
+  label: string;
+  description: string;
+  category: 'visibility' | 'chat' | 'profile' | 'gameplay' | 'identity' | 'protection';
+}
+
+export interface SvipTier {
+  id: string;
+  level: number;
+  name: string;
+  monthlyPointsRequired: number;
+  coinReward: number;
+  iconUrl: string;
+  iconPublicId: string;
+  bannerUrl: string;
+  bannerPublicId: string;
+  grantedItemIds: string[];
+  privileges: string[];
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ---------------- Store ----------------
+
+export type StoreCategory = 'frame' | 'vehicle' | 'theme' | 'ring';
+
+export interface StoreListing {
+  id: string;
+  /** Populated when fetched from admin endpoints; may be the bare ID. */
+  cosmeticItemId: CosmeticItem | string;
+  category: StoreCategory;
+  priceCoins: number;
+  durationDays: number;
+  sortOrder: number;
+  featured: boolean;
+  active: boolean;
+  startDate?: string | null;
+  endDate?: string | null;
+  giftable: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 // ---------------- Permissions ----------------
