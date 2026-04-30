@@ -244,22 +244,41 @@ export default function DailyRewardConfigPage() {
                     <>
                       <div className="col-span-5">
                         <Field label="Cosmetic">
-                          <Select
-                            value={r.cosmeticItemId ?? ''}
-                            onChange={(e) =>
-                              patchReward(di, ri, (x) => ({
-                                ...x,
-                                cosmeticItemId: e.target.value || null,
-                              }))
-                            }
-                          >
-                            <option value="">Choose…</option>
-                            {items.map((it) => (
-                              <option key={it.id} value={it.id}>
-                                [{it.type}] {it.name.en} ({it.code})
-                              </option>
-                            ))}
-                          </Select>
+                          {(() => {
+                            const sel = items.find((it) => it.id === r.cosmeticItemId);
+                            return (
+                              <div className="flex items-center gap-2">
+                                {sel?.previewUrl ? (
+                                  <img
+                                    src={sel.previewUrl}
+                                    alt=""
+                                    className="h-9 w-9 shrink-0 rounded border border-slate-200 object-cover"
+                                  />
+                                ) : (
+                                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-dashed border-slate-300 text-xs text-slate-400">
+                                    —
+                                  </div>
+                                )}
+                                <Select
+                                  className="flex-1"
+                                  value={r.cosmeticItemId ?? ''}
+                                  onChange={(e) =>
+                                    patchReward(di, ri, (x) => ({
+                                      ...x,
+                                      cosmeticItemId: e.target.value || null,
+                                    }))
+                                  }
+                                >
+                                  <option value="">Choose…</option>
+                                  {items.map((it) => (
+                                    <option key={it.id} value={it.id}>
+                                      [{it.type}] {it.name.en} ({it.code})
+                                    </option>
+                                  ))}
+                                </Select>
+                              </div>
+                            );
+                          })()}
                         </Field>
                       </div>
                       <div className="col-span-2">
