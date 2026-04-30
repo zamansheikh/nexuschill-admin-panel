@@ -28,10 +28,41 @@ export default function GiftDetailPage() {
       .finally(() => setLoading(false));
   }, [id]);
 
-  async function softDelete() {
-    if (!confirm('Deactivate this gift? Existing gift sends remain in the ledger.')) return;
+  async function deactivate() {
+    if (!confirm('Deactivate this gift? Existing gift sends remain in the ledger and the gift can be reactivated later.')) return;
     try {
       await api(`/admin/gifts/${id}`, { method: 'DELETE' });
+      // Backend keeps the row, just flips active=false. Reflect that
+      // locally so the admin can flip back to "Reactivate" without a
+      // round-trip.
+      setGift((g) => (g ? { ...g, active: false } : g));
+    } catch (e: any) {
+      setError(e.message);
+    }
+  }
+
+  async function reactivate() {
+    try {
+      const res = await api<{ gift: Gift }>(`/admin/gifts/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ active: true }),
+      });
+      setGift(res.gift);
+    } catch (e: any) {
+      setError(e.message);
+    }
+  }
+
+  async function purge() {
+    if (
+      !confirm(
+        'Permanently delete this gift? This removes it from the catalog along with its Cloudinary assets. Cannot be undone.',
+      )
+    ) {
+      return;
+    }
+    try {
+      await api(`/admin/gifts/${id}/purge`, { method: 'DELETE' });
       router.replace('/gifts');
     } catch (e: any) {
       setError(e.message);
@@ -57,9 +88,23 @@ export default function GiftDetailPage() {
             <Button variant="secondary" onClick={() => router.back()}>
               ← Back
             </Button>
-            {canManage && !gift.active && (
-              <Button variant="danger" onClick={softDelete}>
+            {canManage && gift.active && (
+              <Button variant="danger" onClick={deactivate}>
                 Deactivate
+              </Button>
+            )}
+            {canManage && !gift.active && (
+              <Button variant="secondary" onClick={reactivate}>
+                Reactivate
+              </Button>
+            )}
+            {canManage && gift.totalSent === 0 && (
+              // Hard delete is only safe when no GiftEvent references the
+              // gift; otherwise the ledger would be orphaned. Surface the
+              // affordance only in that safe state and rely on the server's
+              // 409 as a backstop.
+              <Button variant="danger" onClick={purge}>
+                Delete permanently
               </Button>
             )}
           </>

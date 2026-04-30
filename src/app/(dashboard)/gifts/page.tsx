@@ -62,6 +62,46 @@ export default function GiftsPage() {
     load();
   }, [load]);
 
+  // Per-row mutations — keep them inline so the admin doesn't have to
+  // open each gift to retire it.
+  async function deactivate(g: Gift) {
+    if (!confirm(`Deactivate "${g.name.en}"?`)) return;
+    try {
+      await api(`/admin/gifts/${g.id}`, { method: 'DELETE' });
+      load();
+    } catch (e: any) {
+      setError(e.message);
+    }
+  }
+
+  async function reactivate(g: Gift) {
+    try {
+      await api(`/admin/gifts/${g.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ active: true }),
+      });
+      load();
+    } catch (e: any) {
+      setError(e.message);
+    }
+  }
+
+  async function purge(g: Gift) {
+    if (
+      !confirm(
+        `Permanently delete "${g.name.en}"? This also removes its Cloudinary assets. Cannot be undone.`,
+      )
+    ) {
+      return;
+    }
+    try {
+      await api(`/admin/gifts/${g.id}/purge`, { method: 'DELETE' });
+      load();
+    } catch (e: any) {
+      setError(e.message);
+    }
+  }
+
   return (
     <div>
       <PageHeader
@@ -135,11 +175,12 @@ export default function GiftsPage() {
                 <Th>Sent</Th>
                 <Th>Flags</Th>
                 <Th>Status</Th>
+                {canManage && <Th>Actions</Th>}
               </tr>
             </thead>
             <tbody>
               {data.items.map((g) => (
-                <tr key={g.id} className="cursor-pointer hover:bg-slate-50">
+                <tr key={g.id} className="hover:bg-slate-50">
                   <Td>
                     <Link href={`/gifts/${g.id}`}>
                       <code className="text-xs font-semibold text-brand">{g.code}</code>
@@ -180,6 +221,38 @@ export default function GiftsPage() {
                   <Td>
                     {g.active ? <Badge tone="green">active</Badge> : <Badge tone="slate">inactive</Badge>}
                   </Td>
+                  {canManage && (
+                    <Td>
+                      <div className="flex flex-wrap gap-1">
+                        {g.active ? (
+                          <button
+                            onClick={() => deactivate(g)}
+                            className="rounded border border-red-200 bg-white px-2 py-0.5 text-xs font-medium text-red-600 hover:bg-red-50"
+                          >
+                            Deactivate
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => reactivate(g)}
+                            className="rounded border border-emerald-200 bg-white px-2 py-0.5 text-xs font-medium text-emerald-600 hover:bg-emerald-50"
+                          >
+                            Reactivate
+                          </button>
+                        )}
+                        {g.totalSent === 0 && (
+                          // Hard-delete is only safe when no GiftEvent
+                          // references this gift. The button is hidden
+                          // otherwise; the server enforces the same rule.
+                          <button
+                            onClick={() => purge(g)}
+                            className="rounded border border-red-300 bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700 hover:bg-red-100"
+                          >
+                            Delete
+                          </button>
+                        )}
+                      </div>
+                    </Td>
+                  )}
                 </tr>
               ))}
             </tbody>
