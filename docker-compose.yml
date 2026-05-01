@@ -1,0 +1,16 @@
+services:
+  panel:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nexuschill_admin_panel
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - '3001:3001'
+    networks: [panel_net]
+
+networks:
+  panel_net:
+    driver: bridge
