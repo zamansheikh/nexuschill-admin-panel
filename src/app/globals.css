@@ -9,8 +9,40 @@ body {
   color: #0f172a;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 * {
   box-sizing: border-box;
+}
+
+/* Slim, themed scrollbars on overflow regions (chrome/edge/safari).
+   Firefox falls back to native — fine. */
+@media (min-width: 768px) {
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 9999px;
+    border: 2px solid #f8fafc;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: #cbd5e1;
+  }
+}
+
+/* Disable iOS' tap-highlight grey flash on buttons / links. */
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Body lock helper — added/removed when the mobile sidebar drawer is open. */
+body.no-scroll {
+  overflow: hidden;
 }

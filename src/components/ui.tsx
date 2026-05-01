@@ -13,12 +13,12 @@ export function PageHeader({
   actions?: ReactNode;
 }) {
   return (
-    <div className="mb-6 flex items-end justify-between gap-4">
+    <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">{title}</h1>
+        <h1 className="text-xl font-bold text-slate-900 sm:text-2xl">{title}</h1>
         {subtitle && <p className="mt-1 text-sm text-slate-500">{subtitle}</p>}
       </div>
-      {actions && <div className="flex shrink-0 gap-2">{actions}</div>}
+      {actions && <div className="flex flex-wrap gap-2 sm:shrink-0">{actions}</div>}
     </div>
   );
 }
@@ -121,16 +121,23 @@ export function Field({
 
 export function Card({ children, className = '' }: { children: ReactNode; className?: string }) {
   return (
-    <div className={`rounded-xl border border-slate-200 bg-white p-5 ${className}`}>
+    <div
+      className={`rounded-xl border border-slate-200 bg-white p-5 shadow-soft ${className}`}
+    >
       {children}
     </div>
   );
 }
 
 export function Table({ children }: { children: ReactNode }) {
+  // Outer div clips and rounds corners; inner div provides horizontal
+  // scroll on narrow viewports so wide admin tables don't blow out the
+  // layout on mobile.
   return (
-    <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
-      <table className="w-full text-sm">{children}</table>
+    <div className="rounded-xl border border-slate-200 bg-white shadow-soft">
+      <div className="overflow-x-auto rounded-xl">
+        <table className="w-full min-w-[640px] text-sm">{children}</table>
+      </div>
     </div>
   );
 }
