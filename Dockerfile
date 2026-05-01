@@ -10,6 +10,13 @@ RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
 COPY tsconfig.json next.config.mjs postcss.config.mjs tailwind.config.ts next-env.d.ts ./
 COPY src ./src
 
+# NEXT_PUBLIC_* vars are inlined into the JS bundle at build time —
+# setting them at runtime via env_file is too late. docker-compose
+# passes the value here from the VPS .env so the browser bundle hits
+# the real backend instead of localhost:3000.
+ARG NEXT_PUBLIC_API_BASE_URL
+ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
+
 # next.config.mjs sets `output: 'standalone'` — produces a self-contained
 # server bundle at .next/standalone with only the node_modules it needs.
 RUN npm run build

@@ -3,6 +3,12 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        # NEXT_PUBLIC_* must be passed as a build arg (baked into the
+        # browser bundle), not just env_file (runtime-only). Compose
+        # substitutes ${NEXT_PUBLIC_API_BASE_URL} from the project-root
+        # .env file automatically.
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
     container_name: nexuschill_admin_panel
     restart: unless-stopped
     env_file:
