@@ -55,6 +55,7 @@ const SECTIONS: NavSection[] = [
       { href: '/splash', label: 'Splash Banners', permission: 'banners.view', icon: '▣' },
       { href: '/daily-reward', label: 'Daily Reward', permission: 'daily_reward.view', icon: '✓' },
       { href: '/moments', label: 'Moments', permission: 'moments.view', icon: '✎' },
+      { href: '/push', label: 'Push Notifications', permission: 'notifications.push', icon: '✉' },
     ],
   },
   {
