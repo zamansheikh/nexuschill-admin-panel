@@ -86,16 +86,27 @@ export default function GiftsPage() {
     }
   }
 
-  async function purge(g: Gift) {
-    if (
-      !confirm(
-        `Permanently delete "${g.name.en}"? This also removes its Cloudinary assets. Cannot be undone.`,
-      )
-    ) {
-      return;
-    }
+  /// Hard delete. Routes to /purge for never-sent gifts (no cascade
+  /// needed) and /force for sent gifts (cascades GiftEvent rows so we
+  /// don't leave orphans pointing at a missing Gift document).
+  async function deletePermanently(g: Gift) {
+    const hasSends = g.totalSent > 0;
+    const confirmMsg = hasSends
+      ? `Permanently delete "${g.name.en}"?\n\nThis gift has been sent ${g.totalSent} time(s). Continuing will ALSO delete every gift-history record (sent / received) referencing it, plus its Cloudinary assets.\n\nFinancial transaction logs are kept. Cannot be undone.`
+      : `Permanently delete "${g.name.en}"? This removes the gift and its Cloudinary assets. Cannot be undone.`;
+    if (!confirm(confirmMsg)) return;
     try {
-      await api(`/admin/gifts/${g.id}/purge`, { method: 'DELETE' });
+      const path = hasSends
+        ? `/admin/gifts/${g.id}/force`
+        : `/admin/gifts/${g.id}/purge`;
+      const res = await api<{ success: boolean; deletedEvents?: number }>(path, {
+        method: 'DELETE',
+      });
+      if (hasSends && res.deletedEvents) {
+        // Lightweight feedback — alert is fine here; the page reloads
+        // immediately after so the gift is gone from view either way.
+        alert(`Deleted gift and ${res.deletedEvents} associated history record(s).`);
+      }
       load();
     } catch (e: any) {
       setError(e.message);
@@ -239,17 +250,21 @@ export default function GiftsPage() {
                             Reactivate
                           </button>
                         )}
-                        {g.totalSent === 0 && (
-                          // Hard-delete is only safe when no GiftEvent
-                          // references this gift. The button is hidden
-                          // otherwise; the server enforces the same rule.
-                          <button
-                            onClick={() => purge(g)}
-                            className="rounded border border-red-300 bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700 hover:bg-red-100"
-                          >
-                            Delete
-                          </button>
-                        )}
+                        {/* Hard delete is always available; for gifts
+                            with sends the handler routes to /force which
+                            cascades GiftEvent removal so nothing else is
+                            left pointing at a missing Gift. */}
+                        <button
+                          onClick={() => deletePermanently(g)}
+                          className="rounded border border-red-300 bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700 hover:bg-red-100"
+                          title={
+                            g.totalSent > 0
+                              ? `Cascade-deletes ${g.totalSent} history record(s)`
+                              : 'Permanently delete'
+                          }
+                        >
+                          Delete
+                        </button>
                       </div>
                     </Td>
                   )}

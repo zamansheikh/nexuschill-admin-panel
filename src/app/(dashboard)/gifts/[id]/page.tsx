@@ -53,16 +53,27 @@ export default function GiftDetailPage() {
     }
   }
 
-  async function purge() {
-    if (
-      !confirm(
-        'Permanently delete this gift? This removes it from the catalog along with its Cloudinary assets. Cannot be undone.',
-      )
-    ) {
-      return;
-    }
+  /// Hard delete. /purge for never-sent gifts (clean), /force for
+  /// gifts with sends (cascades GiftEvent rows so nothing else is left
+  /// pointing at a missing Gift). The gift detail page redirects back
+  /// to the list either way, so feedback is just a confirm + alert.
+  async function deletePermanently() {
+    if (!gift) return;
+    const hasSends = gift.totalSent > 0;
+    const confirmMsg = hasSends
+      ? `Permanently delete this gift?\n\nIt has been sent ${gift.totalSent} time(s). Continuing will ALSO delete every gift-history record (sent / received) referencing it, plus its Cloudinary assets.\n\nFinancial transaction logs are kept. Cannot be undone.`
+      : 'Permanently delete this gift? This removes it from the catalog along with its Cloudinary assets. Cannot be undone.';
+    if (!confirm(confirmMsg)) return;
     try {
-      await api(`/admin/gifts/${id}/purge`, { method: 'DELETE' });
+      const path = hasSends
+        ? `/admin/gifts/${id}/force`
+        : `/admin/gifts/${id}/purge`;
+      const res = await api<{ success: boolean; deletedEvents?: number }>(path, {
+        method: 'DELETE',
+      });
+      if (hasSends && res.deletedEvents) {
+        alert(`Deleted gift and ${res.deletedEvents} associated history record(s).`);
+      }
       router.replace('/gifts');
     } catch (e: any) {
       setError(e.message);
@@ -98,12 +109,11 @@ export default function GiftDetailPage() {
                 Reactivate
               </Button>
             )}
-            {canManage && gift.totalSent === 0 && (
-              // Hard delete is only safe when no GiftEvent references the
-              // gift; otherwise the ledger would be orphaned. Surface the
-              // affordance only in that safe state and rely on the server's
-              // 409 as a backstop.
-              <Button variant="danger" onClick={purge}>
+            {canManage && (
+              // Hard delete always available; the handler routes to
+              // /purge (zero sends) or /force (cascades GiftEvent rows)
+              // based on totalSent so we never leave orphan refs.
+              <Button variant="danger" onClick={deletePermanently}>
                 Delete permanently
               </Button>
             )}
