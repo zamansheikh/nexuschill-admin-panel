@@ -107,6 +107,67 @@ export interface Agency {
   updatedAt: string;
 }
 
+// ---------------- Families ----------------
+
+export type FamilyStatus = 'active' | 'frozen' | 'disbanded';
+export type FamilyJoinMode = 'review' | 'open' | 'invite_only';
+export type FamilyMemberRole = 'leader' | 'co_leader' | 'member';
+export type FamilyMemberStatusKind = 'active' | 'pending';
+
+export interface Family {
+  id: string;
+  numericId?: number;
+  name: string;
+  coverUrl: string;
+  coverPublicId: string;
+  notification: string;
+  joinMode: FamilyJoinMode;
+  joinLevelRequirement: number;
+  level: number;
+  leaderId: string;
+  coLeaderIds: string[];
+  memberCount: number;
+  status: FamilyStatus;
+  soloSince?: string | null;
+  lastNameChangedAt?: string | null;
+  lastCoverChangedAt?: string | null;
+  createdBy: string;
+  creationFeePaid: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface FamilyMember {
+  id: string;
+  familyId: string;
+  /** Backend admin endpoint populates with display fields. */
+  userId:
+    | string
+    | {
+        id: string;
+        username?: string;
+        displayName?: string;
+        numericId?: number;
+        avatarUrl?: string;
+      };
+  role: FamilyMemberRole;
+  status: FamilyMemberStatusKind;
+  joinedAt: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ---------------- System config ----------------
+
+export interface AppConfig {
+  id: string;
+  key: 'singleton';
+  familiesEnabled: boolean;
+  agenciesEnabled: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // ---------------- Resellers ----------------
 
 export interface Reseller {

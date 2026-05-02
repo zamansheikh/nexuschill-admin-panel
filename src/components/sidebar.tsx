@@ -36,6 +36,7 @@ const SECTIONS: NavSection[] = [
     items: [
       { href: '/users', label: 'App Users', permission: 'users.view', icon: '◯' },
       { href: '/agencies', label: 'Agencies', permission: 'agency.view', icon: '◈' },
+      { href: '/families', label: 'Families', permission: 'family.view', icon: '✦' },
       { href: '/resellers', label: 'Resellers', permission: 'reseller.view', icon: '◇' },
     ],
   },
@@ -70,8 +71,9 @@ const SECTIONS: NavSection[] = [
     label: 'System',
     items: [
       { href: '/admins', label: 'Admin Users', permission: 'admin.view', icon: '◉' },
-      { href: '/roles', label: 'Roles & Permissions', permission: 'admin.view', icon: '✦' },
+      { href: '/roles', label: 'Roles & Permissions', permission: 'admin.view', icon: '✪' },
       { href: '/agora', label: 'Agora (RTC/RTM)', permission: 'agora.view', icon: '⚡' },
+      { href: '/settings', label: 'Settings', permission: 'system.config', icon: '⚙' },
     ],
   },
 ];
