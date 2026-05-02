@@ -157,6 +157,29 @@ export interface FamilyMember {
   updatedAt: string;
 }
 
+// ---------------- Magic Ball ----------------
+
+export type MagicBallTaskKind =
+  | 'mic_minutes'
+  | 'invites_completed'
+  | 'gifts_sent'
+  | 'gifts_received'
+  | 'chat_messages'
+  | 'room_visitors';
+
+export interface MagicBallTask {
+  id: string;
+  label: string;
+  kind: MagicBallTaskKind;
+  goal: number;
+  rewardCoins: number;
+  sortOrder: number;
+  active: boolean;
+  createdBy?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // ---------------- System config ----------------
 
 export interface AppConfig {
