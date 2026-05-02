@@ -448,6 +448,27 @@ export interface SplashBanner {
   updatedAt: string;
 }
 
+/// Mirrors HomeBanner field-for-field except for `slot` (1 = top in-room
+/// stack, 2 = bottom). Mobile groups results into two stacked PageView
+/// strips client-side.
+export interface RoomBanner {
+  id: string;
+  title: string;
+  subtitle: string;
+  imageUrl: string;
+  imagePublicId: string;
+  linkKind: BannerLinkKind;
+  linkValue: string;
+  slot: number;
+  sortOrder: number;
+  active: boolean;
+  startDate?: string | null;
+  endDate?: string | null;
+  countries: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
 // ---------------- Daily Reward ----------------
 
 export type RewardKind = 'coin' | 'cosmetic';
