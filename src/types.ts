@@ -180,6 +180,27 @@ export interface MagicBallTask {
   updatedAt: string;
 }
 
+// ---------------- Lucky Bag config ----------------
+
+export interface LuckyBagTier {
+  slotCount: number;
+  /** Length === slotCount; sum === 1.0. */
+  percentages: number[];
+}
+
+export interface LuckyBagConfig {
+  id: string;
+  key: 'singleton';
+  enabled: boolean;
+  /** 0..1 — platform's cut taken off the top before distribution. */
+  commissionRate: number;
+  applyCommissionByDefault: boolean;
+  coinPresets: number[];
+  tiers: LuckyBagTier[];
+  createdAt: string;
+  updatedAt: string;
+}
+
 // ---------------- System config ----------------
 
 export interface AppConfig {
